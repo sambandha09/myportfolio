@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sambandha Dahal - Portfolio</title>
+
+  <!-- Outfit font -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial']
+          },
+          colors: {
+            primary: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+          },
+          boxShadow: {
+            soft: '0 14px 28px -10px rgba(0,0,0,.12), 0 8px 12px -8px rgba(0,0,0,.06)'
+          },
+          borderRadius: { xl2: '1.25rem' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Set theme before paint -->
+  <script>
+      (function () {
+        const root = document.documentElement;
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'dark' || (!stored && prefersDark)) root.classList.add('dark');
+      })();
+  </script>
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-card {
+      background: rgba(255, 255, 255, .85);
+      border: 1px solid rgba(226, 232, 240, .9);
+      border-radius: 1rem;
+      box-shadow: var(--card-shadow, 0 14px 28px -10px rgba(0, 0, 0, .12), 0 8px 12px -8px rgba(0, 0, 0, .06));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .dark .section-card {
+      background: rgba(10, 15, 25, .75);
+      border-color: rgba(55, 65, 81, .8);
+      box-shadow: 0 18px 32px -16px rgba(0, 0, 0, .5);
+    }
+
+    .hover-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 36px -14px rgba(0, 0, 0, .18), 0 10px 16px -12px rgba(0, 0, 0, .08);
+    }
+
+    .mini-card {
+      border: 1px solid rgba(226, 232, 240, .9);
+      border-radius: .85rem;
+      padding: 1.1rem;
+      background: rgba(255, 255, 255, .9);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px -12px rgba(0, 0, 0, .16);
+      border-color: #dbe4f0;
+      background: #fff;
+    }
+
+    .dark .mini-card {
+      background: rgba(12, 18, 30, .9);
+      border-color: #1f2937;
+    }
+
+    .dark .mini-card:hover {
+      background: #0b1220;
+      border-color: #2a364a;
+      box-shadow: 0 16px 26px -16px rgba(0, 0, 0, .6);
+    }
+
+    .img-ph {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(59, 130, 246, .10), rgba(139, 92, 246, .10));
+      color: rgba(107, 114, 128, 1);
+      font-weight: 600;
+      font-size: 1.75rem;
+      border: 2px dashed rgba(148, 163, 184, .65);
+      border-radius: inherit;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .dark .img-ph {
+      background: linear-gradient(135deg, rgba(59, 130, 246, .07), rgba(139, 92, 246, .07));
+      color: rgba(203, 213, 225, 1);
+      border-color: rgba(75, 85, 99, .8);
+    }
+
+    .avatar-wrap {
+      width: 11rem;
+      height: 11rem;
+      border-radius: 9999px;
+      padding: .4rem;
+      background: rgba(255, 255, 255, .45);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(226, 232, 240, .9);
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, .18);
+    }
+
+    .dark .avatar-wrap {
+      background: rgba(12, 18, 30, .6);
+      border-color: #1f2937;
+    }
+
+    #loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, .96);
+      z-index: 1000;
+      opacity: 1;
+      transition: opacity .3s ease;
+    }
+
+    .dark #loader {
+      background: rgba(15, 23, 42, .96);
+    }
+  </style>
+</head>
+
+<body
+  class="font-sans bg-gradient-to-br from-white to-slate-50 dark:from-gray-950 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+
+  <!-- Loader -->
+  <div id="loader" aria-live="polite">
+    <div class="flex flex-col items-center gap-3">
+      <svg class="animate-spin w-10 h-10 text-primary-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25" />
+        <path d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" fill="currentColor" class="opacity-75" />
+      </svg>
+      <span class="text-sm text-gray-500 dark:text-gray-400">Loading…</span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav
+    class="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-50 border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="#home" class="text-2xl sm:text-3xl font-semibold">Sambandha Dahal</a>
+
+        <div class="hidden md:flex items-center space-x-8 text-base lg:text-lg font-medium">
+          <a href="#home" class="hover:text-primary-600 dark:hover:text-primary-500">Home</a>
+          <a href="#about" class="hover:text-primary-600 dark:hover:text-primary-500">About</a>
+          <a href="#experience" class="hover:text-primary-600 dark:hover:text-primary-500">Experience</a>
+          <a href="#education" class="hover:text-primary-600 dark:hover:text-primary-500">Education</a>
+          <a href="#skills" class="hover:text-primary-600 dark:hover:text-primary-500">Skills</a>
+          <a href="#responsibilities" class="hover:text-primary-600 dark:hover:text-primary-500">Responsibilities</a>
+          <a href="#certificates" class="hover:text-primary-600 dark:hover:text-primary-500">Certificates</a>
+          <a href="#contact" class="hover:text-primary-600 dark:hover:text-primary-500">Contact</a>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <button id="theme-toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Toggle theme">
+            <svg id="sun-icon" class="w-5 h-5 hidden" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zM3 11a1 1 0 100-2H2a1 1 0 000 2h1zm7 7a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1z"
+                clip-rule="evenodd" />
+            </svg>
+            <svg id="moon-icon" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+          </button>
+          <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Open menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu"
+      class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+      <div class="px-4 py-3 space-y-1 text-base font-medium">
+        <a href="#home" class="block py-2">Home</a>
+        <a href="#about" class="block py-2">About</a>
+        <a href="#experience" class="block py-2">Experience</a>
+        <a href="#education" class="block py-2">Education</a>
+        <a href="#skills" class="block py-2">Skills</a>
+        <a href="#responsibilities" class="block py-2">Responsibilities</a>
+        <a href="#certificates" class="block py-2">Certificates</a>
+        <a href="#contact" class="block py-2">Contact</a>
+      </div>
+    </div>
+  </nav>
+  <div class="flex items-center space-x-3">
+    <button id="theme-toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Toggle theme">
+      <svg id="sun-icon" class="w-7 h-7 hidden" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zM3 11a1 1 0 100-2H2a1 1 0 000 2h1zm7 7a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1z"
+          clip-rule="evenodd" />
+      </svg>
+      <svg id="moon-icon" class="w-7 h-7" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+      </svg>
+    </button>
+
+    <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+      aria-label="Open menu">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-menu"
+    class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <div class="px-4 py-3 space-y-1 text-sm font-medium">
+      <a href="#home" class="block py-2">Home</a>
+      <a href="#about" class="block py-2">About</a>
+      <a href="#experience" class="block py-2">Experience</a>
+      <a href="#education" class="block py-2">Education</a>
+      <a href="#skills" class="block py-2">Skills</a>
+      <a href="#responsibilities" class="block py-2">Responsibilities</a>
+      <a href="#certificates" class="block py-2">Certificates</a>
+      <a href="#contact" class="block py-2">Contact</a>
+    </div>
+  </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" class="pt-20 min-h-[88vh] flex items-center justify-center 
+         bg-[url('qatargas2_5_0.jpg')] bg-cover bg-center bg-no-repeat 
+         dark:from-gray-900 dark:to-gray-800">
+    <div class="max-w-5xl mx-auto px-4 w-full">
+      <div class="section-card hover-card p-8 sm:p-10 text-center bg-white/70 dark:bg-gray-900/70 rounded-xl shadow-lg">
+        <div class="avatar-wrap mx-auto mb-6">
+          <div class="w-full h-full rounded-full overflow-hidden relative">
+            <img id="hero-photo" src="dp.jpg" alt="man" class="w-full h-full object-cover hidden">
+            <div class="img-ph rounded-full" aria-hidden="true">#</div>
+          </div>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-semibold gradient-text mb-2">Sambandha Dahal</h1>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">Mechanical Engineer • Scaffolding Supervisor •
+          Project Engineer</p>
+        <a href="#contact"
+          class="mt-6 inline-block bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-7 rounded-lg transition-colors">
+          Get In Touch
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ABOUT -->
+  <section id="about" class="pt-24 pb-16"> <!-- more top padding -->
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="section-card hover-card p-8 sm:p-10">
+        <h2 class="text-2xl sm:text-3xl font-semibold gradient-text mb-6">About Me</h2>
+        <p class="text-lg sm:text-xl text-gray-700 dark:text-gray-200 leading-relaxed">
+          Adaptable and innovative Mechanical Engineer with 10+ years’ experience across Hydropower, Oil & Gas, and
+          Construction. Strong in planning, supervision, and inspection with excellent organizational skills and work
+          ethics.
+          Committed to delivering in fast-paced, deadline-driven, and creative environments.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="section-card hover-card p-8 sm:p-10">
+        <h2 class="text-2xl sm:text-3xl font-semibold gradient-text mb-6">Work Experience</h2>
+
+        <div class="space-y-6 text-base sm:text-lg">
+
+          <!-- Experience 1 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Scaffolding Supervisor — Descon Engineering LLC
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 whitespace-nowrap">
+                Sept 2024 – Present
+              </span>
+            </div>
+            <p class="text-gray-700 dark:text-gray-300 mt-1 text-base sm:text-lg">
+              Supervising shutdown scaffolding operations in Qatar with strict HSE compliance and team leadership.
+            </p>
+          </div>
+
+          <!-- Experience 2 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Scaffolding Lead Man, PTW — Descon Engineering LLC
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 whitespace-nowrap">
+                Sept 2023 – Mar 2024
+              </span>
+            </div>
+          </div>
+
+          <!-- Experience 3 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Scaffolding Designer & Planner — MV Dugar Group, Likhu II HEP 55 MW
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 whitespace-nowrap">
+                2021 – 2023
+              </span>
+            </div>
+          </div>
+
+          <!-- Experience 4 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Design Engineer & Planner — Dynamic Resources Management Services Pvt Ltd
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 whitespace-nowrap">
+                2020 – 2021
+              </span>
+            </div>
+          </div>
+
+          <!-- Experience 5 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Design Engineer & Planner — S & P Innovation and Construction Pvt. Ltd
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 whitespace-nowrap">
+                2019 – 2020
+              </span>
+            </div>
+          </div>
+
+          <!-- Experience 6 -->
+          <div class="mini-card">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <h3 class="font-semibold text-lg sm:text-xl text-gray-900 dark:text-gray-100">
+                Mechanical Engineer / Project Engineer — Chainlink Engineering Pvt. Ltd
+              </h3>
+              <span
+                class="text-sm sm:text-base px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 whitespace-nowrap">
+                2016 – 2019
+              </span>
+            </div>
+
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2 mt-2">
+              <span
+                class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                Trishuli Hydropower Repair (2017)
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                3-Vane Test Rig (2017)
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                HVAC — US Embassy (2018)
+              </span>
+              <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
+                ROV — Kaligandaki (2018/19)
+              </span>
+              <span
+                class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
+                Devighat Gates (2019)
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- EDUCATION -->
+  <section id="education" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="section-card hover-card p-8 sm:p-10">
+        <h2 class="text-xl sm:text-2xl font-semibold gradient-text mb-6">Education</h2>
+        <div class="grid md:grid-cols-3 gap-6 text-[15px] sm:text-base">
+          <div class="mini-card">
+            <h3 class="font-medium">Bachelor in Mechanical Engineering</h3>
+            <p class="text-primary-600 dark:text-primary-500 mt-1">Visweswarya Institute of Technological University
+              (2012–2016)</p>
+          </div>
+          <div class="mini-card">
+            <h3 class="font-medium">Higher Secondary (+2 Science)</h3>
+            <p class="text-green-600 dark:text-green-400 mt-1">Kathmandu Model College (2010–2012)</p>
+          </div>
+          <div class="mini-card">
+            <h3 class="font-medium">Secondary Education</h3>
+            <p class="text-purple-600 dark:text-purple-400 mt-1">Saptakoshi English Boarding Higher Secondary School</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS & CERTIFICATIONS -->
+  <section id="skills" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="section-card hover-card p-8 sm:p-10">
+        <h2 class="text-xl sm:text-2xl font-semibold gradient-text mb-6">Certifications, Trainings & Skills</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-[15px] sm:text-base">
+          <div class="mini-card">Primavera P6</div>
+          <div class="mini-card">AutoCAD 2D & 3D</div>
+          <div class="mini-card">NEBOSH UK (IGC)</div>
+          <div class="mini-card">CISRS — Basic Scaffolding Inspection</div>
+          <div class="mini-card">ANSYS • STAAD Pro • ETABS</div>
+          <div class="mini-card">Microsoft Project • Advanced Excel</div>
+          <div class="mini-card">IOSH Managing Safety</div>
+          <div class="mini-card">Work at Height • Gas Watch • PTW (QE LNG V7/V9)</div>
+          <div class="mini-card">Confined Space Entry</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESPONSIBILITIES -->
+  <section id="responsibilities" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="section-card p-10 lg:p-16">
+        <div class="section-title">
+          <h2 class="text-xl sm:text-2xl font-semibold gradient-text mb-6">
+            Roles & Responsibilities
+          </h2>
+          <div class="title-decoration"></div>
+        </div>
+
+        <div class="responsibilities-grid">
+          <!-- Planning & Reporting -->
+          <div class="mini-card">
+            <h3 class=" sm:text-2xl font-semibold mb-6">Planning & Reporting</h3>
+            <p>
+              Prepare and update detailed project schedules in line with contractual requirements, align activities with
+              milestones, and maintain shutdown tracking sheets. Monitor actuals versus plan and recommend corrective
+              actions.
+            </p>
+          </div>
+
+          <!-- HSE & Standards -->
+          <div class="mini-card">
+            <h3 class="sm:text-2xl font-semibold mb-6">HSE & Standards</h3>
+            <p>
+              Enforce TG20:21 and relevant codes (CITB-NVQ-UK, TUV) across all scaffolding operations. Conduct daily
+              toolbox talks, lead safety walk-throughs, and drive a strong safety culture in line with company policies.
+            </p>
+          </div>
+
+          <!-- Site Supervision -->
+          <div class="mini-card">
+            <h3 class="sm:text-2xl font-semibold mb-4">Site Supervision</h3>
+            <p>
+              Supervise scaffolding and mechanical works—erection, dismantling, repair, and maintenance—across
+              hydropower, oil & gas sites. Allocate crews, control materials, and ensure quality workmanship.
+            </p>
+          </div>
+
+          <!-- Coordination -->
+          <div class="mini-card">
+            <h3 class="sm:text-2xl font-semibold mb-4">Coordination</h3>
+            <p>
+              Coordinate with engineering, planning, and field execution teams for pre-shutdown site verification.
+              Orchestrate sequencing, resource mobilization, and smooth task handovers to meet tight timelines.
+            </p>
+          </div>
+
+          <!-- Inspection & Compliance -->
+          <div class="mini-card">
+            <h3 class="sm:text-2xl font-semibold mb-4">Inspection & Compliance</h3>
+            <p>
+              Perform routine inspections of scaffolding structures and mechanical installations to confirm compliance
+              with approved designs. Document findings and support client audits for quality assurance.
+            </p>
+          </div>
+
+          <!-- Project Execution & Shutdown Management -->
+          <div class="mini-card">
+            <h3 class="sm:text-2xl font-semibold mb-4">Project Execution</h3>
+            <p>
+              Lead execution during critical shutdowns and turnarounds, ensuring scaffolding, mechanical, and HSE tasks
+              are completed to schedule. Manage work permits and deliver to client requirements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CERTIFICATES -->
+  <section id="certificates" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="section-card hover-card p-2 sm:p-10">
+        <h2 class="text-xl sm:text-2xl font-semibold gradient-text mb-6">Certificates</h2>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card -->
+          <figure
+            class="group overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 relative bg-white flex items-center justify-center">
+            <img src="new-1.png" alt="Certificate" class="w-full h-full object-contain select-none cursor-zoom-in"
+              onclick="openCertModal('new-1.png')">
+          </figure>
+
+          <figure
+            class="group overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 relative bg-white flex items-center justify-center">
+            <img src="new.jpg" alt="Certificate" class="w-full h-full object-contain select-none cursor-zoom-in"
+              onclick="openCertModal('new.jpg')">
+          </figure>
+
+          <figure
+            class="group overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 relative bg-white flex items-center justify-center">
+            <img src="new2.png" alt="Certificate" class="w-full h-full object-contain select-none cursor-zoom-in"
+              onclick="openCertModal('new2.png')">
+          </figure>
+           <figure
+            class="group overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 relative bg-white flex items-center justify-center">
+            <img src="rob.png" alt="Certificate" class="w-full h-full object-contain select-none cursor-zoom-in"
+              onclick="openCertModal('rob.png')">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div id="certModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/75 p-4"
+    onclick="closeCertModal()">
+    <img id="certModalImg" class="max-w-[95vw] max-h-[90vh] object-contain rounded-lg shadow-xl cursor-zoom-out" src=""
+      alt="Certificate large">
+  </div>
+
+  <script>
+    function openCertModal(src) {
+      const m = document.getElementById('certModal');
+      const img = document.getElementById('certModalImg');
+      img.src = src;
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeCertModal() {
+      const m = document.getElementById('certModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+  </script>
+
+  <!-- License / Recognition -->
+  <section id="recognition" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="section-card hover-card inline-block w-fit mx-auto p-8">
+        <h2 class="text-xl sm:text-2xl font-semibold gradient-text mb-7 text-center">Recognition</h2>
+
+        <!-- Two cards -->
+        <div class="grid sm:grid-cols-2 gap-6">
+
+          <!-- Card 1 -->
+          <figure
+            class="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 bg-white p-0 w-full flex items-center justify-center">
+            <img src="license.png" alt="Recognition 1" class="block w-full h-full object-scale-down cursor-zoom-in"
+              onclick="openCertModal('license.png')">
+          </figure>
+          <!-- Card 2 -->
+          <figure
+            class="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 bg-white p-0 w-full flex items-center justify-center">
+            <img src="recog1.png" alt="Recognition 2" class="block w-full h-full object-scale-down cursor-zoom-in"
+              onclick="openCertModal('recog1.png')">
+          </figure>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="certModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/75 p-4"
+    onclick="closeCertModal()">
+    <img id="certModalImg" class="max-w-[95vw] max-h-[90vh] object-contain rounded-lg shadow-xl cursor-zoom-out" src=""
+      alt="Zoomed image">
+  </div>
+
+  <script>
+    function openCertModal(src) {
+      const m = document.getElementById('certModal');
+      const img = document.getElementById('certModalImg');
+      img.src = src;
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeCertModal() {
+      const m = document.getElementById('certModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+  </script>
+
+  <div class="img-ph absolute inset-0 rounded-xl text-4xl flex items-center justify-center pointer-events-none"
+    aria-hidden="true"></div>
+  </figure>
+  </div>
+  </div>
+  </div>
+  </section>
+  </div>
+  </div>
+  </div>
+  </section>
+
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="section-card hover-card p-8 sm:p-10 text-center">
+        <h2 class="text-xl sm:text-2xl font-semibold mb-6 gradient-text">Get In Touch</h2>
+
+        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+          <!-- Address -->
+          <p class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                clip-rule="evenodd" />
+            </svg>
+            Urlabari-05, Morang, Nepal
+          </p>
+
+          <!-- Phones -->
+          <p class="flex items-center justify-center">
+            <!-- Phone Icon -->
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+            </svg>
+            <a href="tel:+9779840723609" class="hover:underline">+977-9840723609</a>
+          </p>
+
+          <!-- WhatsApp for +974 -->
+          <p class="flex items-center justify-center">
+            <!-- WhatsApp Icon -->
+            <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                d="M20.52 3.48A11.86 11.86 0 0012.05 0C5.43 0 .11 5.32.11 11.91c0 2.1.55 4.15 1.61 5.95L0 24l6.3-1.64a11.84 11.84 0 005.75 1.47h.01c6.62 0 11.95-5.32 11.95-11.91 0-3.19-1.25-6.19-3.49-8.44zM12.05 21.5c-1.87 0-3.69-.5-5.29-1.44l-.38-.23-3.74.97 1-3.64-.25-.37a9.42 9.42 0 01-1.46-5.05c0-5.2 4.25-9.44 9.47-9.44 2.53 0 4.91.98 6.7 2.76a9.35 9.35 0 012.77 6.68c0 5.19-4.25 9.43-9.48 9.43zm5.48-7.06c-.3-.15-1.76-.87-2.04-.97-.28-.1-.49-.15-.7.15-.2.29-.8.97-.98 1.17-.18.2-.36.22-.66.07-.3-.15-1.26-.46-2.4-1.46-.88-.78-1.47-1.74-1.64-2.04-.17-.29-.02-.45.13-.6.13-.13.3-.36.45-.55.15-.19.2-.32.3-.53.1-.2.05-.39-.02-.54-.07-.15-.7-1.68-.96-2.31-.25-.6-.51-.52-.7-.53h-.6c-.2 0-.53.08-.8.39s-1.05 1.02-1.05 2.48c0 1.46 1.08 2.87 1.23 3.07.15.2 2.12 3.23 5.13 4.52.72.31 1.29.49 1.73.63.73.23 1.39.2 1.91.12.58-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z" />
+            </svg>
+            <a href="https://wa.me/97430267703" target="_blank" class="hover:underline">+974-30267703</a>
+          </p>
+
+          <!-- Email -->
+          <p class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                d="M2.94 6.34A2 2 0 014.27 6h11.46a2 2 0 011.33.34L10 11 2.94 6.34zM18 8.06l-7.46 4.79a2 2 0 01-2.08 0L1 8.06V14a2 2 0 002 2h14a2 2 0 002-2V8.06z" />
+            </svg>
+            <a href="mailto:Sambandha.dahal01@gmail.com" class="hover:underline">Sambandha.dahal01@gmail.com</a>
+          </p>
+        </div>
+
+        <!-- Social Media -->
+        <div class="flex justify-center space-x-6 mt-6">
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/sambandha-dahal-98477613b/" target="_blank" aria-label="LinkedIn">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#0A66C2" d="M19 0h-14C2.2 0 0 2.2 0 5v14c0 2.8 2.2 5 5 
+      5h14c2.8 0 5-2.2 5-5V5c0-2.8-2.2-5-5-5zM7.1 
+      20.5H3.6V9h3.5v11.5zM5.3 7.5C4.1 7.5 3.1 
+      6.5 3.1 5.3s1-2.2 2.2-2.2c1.2 0 2.2 1 
+      2.2 2.2s-1 2.2-2.2 2.2zm15.2 13h-3.5v-5.6c0-1.3-.03-3.1-1.9-3.1-1.9 
+      0-2.2 1.5-2.2 3v5.7h-3.5V9h3.4v1.6h.05c.5-.9 
+      1.6-1.7 3.3-1.7 3.5 0 4.2 2.3 4.2 5.2v6.4z" />
+            </svg>
+          </a>
+
+          <a href="https://www.instagram.com/sambandha.dahal?igsh=MTQwb20zc25vNzk5dQ==" target="_blank"
+            aria-label="Instagram">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="igGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#fd5" />
+                  <stop offset="25%" stop-color="#ff543e" />
+                  <stop offset="50%" stop-color="#c837ab" />
+                  <stop offset="75%" stop-color="#8134af" />
+                  <stop offset="100%" stop-color="#515bd4" />
+                </linearGradient>
+              </defs>
+
+
+              <rect width="24" height="24" rx="5.5" ry="5.5" fill="url(#igGradient)" />
+
+              <rect x="5.5" y="5.5" width="13" height="13" rx="3.2" ry="3.2" fill="none" stroke="#fff"
+                stroke-width="1.2" />
+
+              <circle cx="12" cy="12" r="3.2" fill="none" stroke="#fff" stroke-width="1.2" />
+
+              <circle cx="16.2" cy="7.8" r="0.9" fill="#fff" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- CV -->
+        <a href="Sambandha%20CV.pdf" download
+          class="mt-8 inline-block bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-8 rounded-lg transition-colors">
+          Download CV
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-800 py-6">
+    <div
+      class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-sm text-gray-600 dark:text-gray-400 gap-3">
+      <p>© <span id="yy"></span> Sambandha Dahal. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="#home" class="hover:text-primary-600 dark:hover:text-primary-500">Home</a>
+        <a href="#experience" class="hover:text-primary-600 dark:hover:text-primary-500">Experience</a>
+        <a href="#contact" class="hover:text-primary-600 dark:hover:text-primary-500">Contact</a>
+        <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+          class="inline-flex items-center gap-1 hover:text-primary-600 dark:hover:text-primary-500"
+          aria-label="Back to top">
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M3 12l7-8 7 8H3z" />
+          </svg>Top
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Robust loader: keep at least 400ms for a smooth feel, then fade out
+    (function () {
+      const l = document.getElementById('loader');
+      let minimumShown = false;
+      setTimeout(() => minimumShown = true, 400);
+      window.addEventListener('load', () => {
+        const hide = () => { if (!l) return; l.style.opacity = '0'; setTimeout(() => { l.style.display = 'none'; }, 300); };
+        if (minimumShown) hide(); else setTimeout(hide, 400);
+      });
+    })();
+
+    // Footer year
+    document.getElementById('yy').textContent = new Date().getFullYear();
+
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    const sun = document.getElementById('sun-icon');
+    const moon = document.getElementById('moon-icon');
+    function syncIcons() {
+      const dark = document.documentElement.classList.contains('dark');
+      if (dark) { sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+      else { sun.classList.add('hidden'); moon.classList.remove('hidden'); }
+    }
+    syncIcons();
+    toggle.addEventListener('click', () => {
+      const dark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      syncIcons();
+    });
+
+    // Mobile menu
+    document.getElementById('mobile-menu-button')
+      .addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('hidden'));
+
+    // ---- Auto-hide placeholders when images load (hero + certificates) ----
+    (function () {
+      function showImage(img) {
+        // Reveal the image and hide its immediate placeholder sibling if present
+        img.classList.remove('hidden');
+        const ph = img.nextElementSibling;
+        if (ph && ph.classList.contains('img-ph')) ph.style.display = 'none';
+      }
+      function handle(img) {
+        const src = (img.getAttribute('src') || '').trim();
+        if (!src || src === '#') return; // keep placeholder
+        if (img.complete) {
+          if (img.naturalWidth > 0) showImage(img); // already loaded
+        } else {
+          img.addEventListener('load', () => showImage(img), { once: true });
+          img.addEventListener('error', () => {
+            // keep placeholder visible on error
+            console.warn('Image failed to load:', src);
+          }, { once: true });
+        }
+      }
+      // Initial pass
+      document.querySelectorAll('img').forEach(handle);
+      // Watch for future src changes (e.g., when you replace '#' later)
+      const mo = new MutationObserver((muts) => {
+        muts.forEach(m => {
+          if (m.type === 'attributes' && m.attributeName === 'src' && m.target.tagName === 'IMG') {
+            handle(m.target);
+          }
+        });
+      });
+      document.querySelectorAll('img').forEach(img => mo.observe(img, { attributes: true }));
+    })();
+  </script>
+</body>
+
+</html>
